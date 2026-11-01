@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  --color-panel: #17181c;
+  --color-panel-2: #1f2026;
+  --color-panel-3: #2a2b33;
+  --color-line: #33343d;
+  --color-ink: #e8e6e1;
+  --color-dim: #8b8a93;
+  --color-amber: #f5a524;
+  --color-good: #4ade80;
+  --color-warn: #facc15;
+  --color-bad: #f87171;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: #0f1013;
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+.readout { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.btn {
+  @apply rounded-md border border-line bg-panel-2 px-3 py-1.5 text-sm text-ink transition hover:bg-panel-3 disabled:opacity-40;
+}
+.btn-primary { @apply border-amber bg-amber text-black font-semibold hover:bg-amber/90; }
+.chip { @apply rounded px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide; }
+.prose-lesson p { @apply mb-2 leading-relaxed; }
+.prose-lesson strong { @apply text-amber font-semibold; }
