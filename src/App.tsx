@@ -75,24 +75,20 @@ export default function App() {
   return (
     <div className="flex min-h-full flex-col">
       <header
-        className="sticky top-0 z-10 flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2"
-        style={{ background: 'linear-gradient(180deg, #3b3c41, #2f3034)', borderBottom: '1px solid #121315', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 6px rgba(0,0,0,0.35)' }}
+        className="sticky top-0 z-10 flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-line bg-panel px-4 py-2"
       >
         <div className="flex items-baseline gap-2">
           <span className="text-[17px] font-bold tracking-tight">mix<span className="text-amber">istance</span></span>
-          <span className="hidden font-cond text-[11px] text-dim md:inline">mixing practice studio</span>
+          <span className="hidden text-[11px] text-dim md:inline">mixing practice studio</span>
         </div>
         {view === 'mix' && channels.length > 0 && <Transport />}
-        <nav className="ml-auto flex gap-px rounded-[6px] bg-[#141517] p-px" aria-label="View">
+        <nav className="ml-auto flex rounded-[5px] border border-line bg-well p-0.5" aria-label="View">
           {(['mix', 'learn', 'train'] as const).map((v) => (
             <button
               key={v}
               onClick={() => go(v)}
               aria-current={view === v ? 'page' : undefined}
-              className="rounded-[5px] px-3.5 py-1 font-cond text-[13px] font-medium transition-colors"
-              style={view === v
-                ? { background: 'linear-gradient(180deg, #5f9ff7, #3f7fd8)', color: '#fff', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)' }
-                : { background: 'linear-gradient(180deg, #46474d, #393a3f)', color: 'var(--color-dim)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)' }}
+              className={`rounded-[4px] px-3.5 py-1 text-[13px] font-medium transition-colors ${view === v ? 'bg-panel-3 text-ink' : 'text-dim hover:text-ink'}`}
             >{VIEW_LABEL[v]}</button>
           ))}
         </nav>
@@ -107,9 +103,9 @@ export default function App() {
       ) : (
         <main className="grid flex-1 gap-3 p-3 2xl:grid-cols-[1fr_380px] xl:grid-cols-[1fr_340px]">
           <div className="flex min-w-0 flex-col gap-3">
-            <div className="well flex gap-3 overflow-x-auto rounded-[6px] p-2" style={{ background: '#1b1c1f' }}>
+            <div className="flex max-w-full gap-3 self-start overflow-x-auto rounded-[6px] border border-line bg-well p-2">
               <div className="flex gap-1.5">{channels.map((c) => <ChannelStripView key={c.id} ch={c} />)}</div>
-              <div className="w-px shrink-0 bg-black/60" />
+              <div className="w-px shrink-0 bg-line" />
               <MasterStrip />
             </div>
             <ChannelDetail />
@@ -120,7 +116,7 @@ export default function App() {
                 <button
                   key={s}
                   onClick={() => setSide(s)}
-                  className={`flex-1 py-2 font-cond text-[13px] font-medium ${side === s ? 'border-b-2 border-sel text-ink' : 'border-b-2 border-transparent text-dim hover:text-ink'}`}
+                  className={`flex-1 py-2 text-[13px] font-medium ${side === s ? 'border-b-2 border-amber text-ink' : 'border-b-2 border-transparent text-dim hover:text-ink'}`}
                 >{SIDE_LABEL[s]}</button>
               ))}
             </div>

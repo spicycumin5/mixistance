@@ -23,7 +23,7 @@ export function TrainView() {
             onClick={() => setActive(d.id)}
             className={`rounded-lg border p-3 text-left transition ${d.id === active ? 'border-amber/70 bg-panel-2' : 'border-line bg-panel hover:border-zinc-600'}`}
           >
-            <div className="text-[10px] uppercase tracking-wider text-dim">{d.tag}</div>
+            <div className="text-[10px] text-dim">{d.tag}</div>
             <div className="text-sm font-semibold">{d.title}</div>
             <div className="mt-0.5 text-xs text-dim">{d.blurb}</div>
           </button>

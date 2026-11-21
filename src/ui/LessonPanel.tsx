@@ -19,7 +19,7 @@ export function buildCheckCtx(): CheckCtx {
 }
 
 const TOPIC_COLORS: Record<Lesson['topic'], string> = {
-  Balance: 'bg-zinc-300', EQ: 'bg-sky-400', Compression: 'bg-amber', Space: 'bg-violet-400', Finishing: 'bg-good',
+  Balance: '', EQ: '', Compression: '', Space: '', Finishing: '',
 }
 
 export function LessonPanel() {
@@ -38,7 +38,7 @@ export function LessonPanel() {
             onClick={() => { setLesson(l); setStep(0) }}
           >
             <div className="mb-1 flex items-center gap-2">
-              <span className={`chip text-black ${TOPIC_COLORS[l.topic]}`}>{l.topic}</span>
+              <span className={`chip ${TOPIC_COLORS[l.topic]}`}>{l.topic}</span>
               <span className="text-[11px] text-dim">{l.minutes} min · {l.steps.length} steps</span>
               {lessonDone(l.id) && <span className="ml-auto text-xs text-good">✓ done</span>}
             </div>
@@ -72,7 +72,7 @@ function LessonRunner({ lesson, step, setStep, onExit }: { lesson: Lesson; step:
     <div className="flex flex-col gap-3">
       <button className="self-start text-xs text-dim hover:text-ink" onClick={onExit}>← All lessons</button>
       <div>
-        <div className="text-[11px] uppercase tracking-wider text-dim">{lesson.title}</div>
+        <div className="text-[11px] text-dim">{lesson.title}</div>
         <div className="mt-1 flex gap-1">
           {lesson.steps.map((_, i) => (
             <button key={i} onClick={() => setStep(i)} className={`h-1.5 flex-1 rounded ${i === step ? 'bg-amber' : i < step ? 'bg-amber/40' : 'bg-panel-3'}`} />
@@ -102,7 +102,7 @@ function LessonRunner({ lesson, step, setStep, onExit }: { lesson: Lesson; step:
           }}
         >{coach.loading ? 'Asking coach…' : '✦ Ask the AI coach why'}</button>
       )}
-      {coach.text && <div className="prose-lesson rounded-md border border-violet-400/30 bg-violet-400/5 p-2 text-sm"><Markdownish text={coach.text} /></div>}
+      {coach.text && <div className="prose-lesson rounded-md border border-line bg-panel-2 p-2 text-sm"><Markdownish text={coach.text} /></div>}
       {coach.error && <div className="text-xs text-bad">{coach.error}</div>}
 
       <div className="mt-1 flex gap-2">

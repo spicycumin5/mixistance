@@ -68,32 +68,32 @@ export function Transport() {
     <div className="flex items-center gap-3">
       <div className="flex gap-1">
         <TBtn label="Go to start" onClick={() => engine.seek(loop.enabled ? loop.start : 0)}>{Icon.start}</TBtn>
-        <TBtn label={playing ? 'Stop (Space)' : 'Play (Space)'} lit={playing} litColor="#5ee08a" onClick={() => (engine.playing ? engine.stop() : engine.play())}>
+        <TBtn label={playing ? 'Stop (Space)' : 'Play (Space)'} lit={playing} litColor="var(--color-amber)" onClick={() => (engine.playing ? engine.stop() : engine.play())}>
           {playing ? Icon.stop : Icon.play}
         </TBtn>
-        <TBtn label="Cycle 4 bars" lit={loop.enabled} litColor="#ffd84d" onClick={toggleLoop}>{Icon.cycle}</TBtn>
+        <TBtn label="Cycle 4 bars" lit={loop.enabled} litColor="var(--color-amber)" onClick={toggleLoop}>{Icon.cycle}</TBtn>
       </div>
 
       {/* LCD */}
-      <div className="well relative flex h-11 items-stretch overflow-hidden rounded-[6px] text-lcd" style={{ background: 'linear-gradient(180deg, #121417, #1a1d22)' }}>
+      <div className="well relative flex h-11 items-stretch overflow-hidden rounded-[5px] text-ink">
         <div className="flex flex-col justify-center px-3">
-          <span ref={barEl} className="readout text-[19px] font-medium leading-none tracking-wide" style={{ textShadow: '0 0 8px rgba(160,200,255,0.35)' }} />
-          <span className="mt-0.5 font-cond text-[9.5px] leading-none text-lcd/50">position</span>
+          <span ref={barEl} className="readout text-[18px] font-medium leading-none tracking-wide" />
+          <span className="mt-0.5 text-[10px] leading-none text-dim">position</span>
         </div>
-        <div className="my-2 w-px bg-white/10" />
+        <div className="my-2 w-px bg-line" />
         <div className="flex flex-col justify-center px-3">
           <span ref={timeEl} className="readout text-[14px] leading-none" />
-          <span className="mt-1 font-cond text-[9.5px] leading-none text-lcd/50">time</span>
+          <span className="mt-1 text-[10px] leading-none text-dim">time</span>
         </div>
-        <div className="my-2 w-px bg-white/10" />
+        <div className="my-2 w-px bg-line" />
         <div className="flex flex-col justify-center px-3">
           <span className="readout text-[14px] leading-none">{bpm}</span>
-          <span className="mt-1 font-cond text-[9.5px] leading-none text-lcd/50">tempo, 4/4</span>
+          <span className="mt-1 text-[10px] leading-none text-dim">tempo, 4/4</span>
         </div>
-        <div className="my-2 w-px bg-white/10" />
+        <div className="my-2 w-px bg-line" />
         <div className="flex flex-col justify-center px-3" title="Short-term loudness of what you're hearing">
           <span ref={lufsEl} className="readout text-[14px] leading-none" />
-          <span className="mt-1 font-cond text-[9.5px] leading-none text-lcd/50">LUFS short</span>
+          <span className="mt-1 text-[10px] leading-none text-dim">LUFS short</span>
         </div>
         {/* Song position strip: click to seek */}
         <div
@@ -105,9 +105,9 @@ export function Transport() {
           }}
         >
           {loop.enabled && duration > 0 && (
-            <div className="absolute inset-y-0 bg-[#ffd84d]/40" style={{ left: `${(loop.start / duration) * 100}%`, width: `${((loop.end - loop.start) / duration) * 100}%` }} />
+            <div className="absolute inset-y-0 bg-amber/35" style={{ left: `${(loop.start / duration) * 100}%`, width: `${((loop.end - loop.start) / duration) * 100}%` }} />
           )}
-          <div ref={head} className="absolute inset-y-0 w-[3px] bg-lcd" />
+          <div ref={head} className="absolute inset-y-0 w-[3px] bg-ink" />
         </div>
       </div>
 
@@ -130,15 +130,15 @@ export function Transport() {
           <>
             <button
               className="btn !py-1 text-xs"
-              style={refOn ? { color: '#5ee08a' } : undefined}
+              style={refOn ? { color: 'var(--color-amber)' } : undefined}
               onClick={() => { engine.setListenToRef(!refOn); setRefOn(!refOn) }}
               title="Switch between your mix and the reference track"
             >{refOn ? 'Hearing reference' : 'Hearing mix'}</button>
-            <label className="flex items-center gap-1 font-cond text-xs text-dim" title="Turn the reference down until its loudness matches your mix, then compare tone and balance">
+            <label className="flex items-center gap-1 text-xs text-dim" title="Turn the reference down until its loudness matches your mix, then compare tone and balance">
               Ref level
               <input
                 type="range" min={-24} max={0} step={0.5} value={refDb}
-                className="w-20 accent-[#5b9cf6]"
+                className="w-20 accent-[#f0a43a]"
                 onChange={(e) => { const v = +e.target.value; setRefDb(v); engine.setRefLevelDb(v) }}
               />
               <span className="readout w-11 text-ink">{refDb} dB</span>

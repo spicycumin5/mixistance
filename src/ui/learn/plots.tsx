@@ -276,7 +276,7 @@ export function TransferCurvePlot({ spec, active }: { spec: CurveSpec; active: s
   const legend = spec.lines.filter((l) => l.label)
   return (
     <div>
-      <div className="mb-1 text-[10px] uppercase tracking-wider text-dim">{spec.title}</div>
+      <div className="mb-1 text-[10px] text-dim">{spec.title}</div>
       <div ref={wrap} className="w-full">
         <canvas ref={cv} style={{ width: '100%', height: w }} className="block rounded-md" />
       </div>
@@ -371,7 +371,7 @@ export function SpectrumPlot({ spec, active, height = 170 }: { spec: SpectrumSpe
   }, [spec, active, w, height])
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wider text-dim">
+      <div className="mb-1 flex items-center justify-between text-[10px] text-dim">
         <span>{spec.title}</span>
         <span className="flex gap-3 normal-case tracking-normal">
           <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-3 bg-[#8b8a93]" />dry</span>
@@ -451,7 +451,7 @@ export function ImpulsePlot({ spec, active, height = 190 }: { spec: IrSpec; acti
   }, [spec, active, w, height])
   return (
     <div>
-      <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wider text-dim">
+      <div className="mb-1 flex items-center justify-between text-[10px] text-dim">
         <span>Impulse response: what one click turns into</span>
         <span className="flex gap-3 normal-case tracking-normal">
           {spec.envelopes.map((e) => (

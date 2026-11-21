@@ -28,13 +28,13 @@ export function ChannelDetail() {
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-3">
         <span className="h-3 w-3 rounded-[2px]" style={{ background: ch.color }} />
-        <h2 className="font-cond text-[15px] font-semibold">{ch.name}</h2>
+        <h2 className="text-[15px] font-semibold">{ch.name}</h2>
         <Knob size={30} label="Trim" min={-24} max={24} defaultValue={0} value={ch.gainDb} step={0.5} format={(v) => fmtDb(v)} onChange={(v) => setChannel(ch.id, { gainDb: v })} />
         <label
           className="ml-auto flex cursor-pointer items-center gap-2 text-xs text-dim"
           title="Loudness-match each processor's output to its input, so toggling EQ/CMP in and out compares tone and dynamics, not volume. Louder always sounds 'better', so this is how pros A/B."
         >
-          <input type="checkbox" checked={matched} onChange={toggleMatch} className="accent-[#5b9cf6]" />
+          <input type="checkbox" checked={matched} onChange={toggleMatch} className="accent-[#f0a43a]" />
           Level-matched A/B
         </label>
       </div>
@@ -60,27 +60,19 @@ export function ChannelDetail() {
 /** Plug-in window title bar: power button, plug-in name, channel it sits on. */
 function PluginBar({ title, channel, color, on, onToggle }: { title: string; channel: string; color: string; on: boolean; onToggle: () => void }) {
   return (
-    <header
-      className="flex items-center gap-2 px-2.5 py-1.5"
-      style={{ background: 'linear-gradient(180deg, #45464c, #393a3f)', borderBottom: '1px solid #141517', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)' }}
-    >
+    <header className="flex items-center gap-2 border-b border-line bg-panel-2 px-3 py-1.5">
       <button
         type="button"
         onClick={onToggle}
         aria-pressed={on}
         title={on ? 'On (click to bypass)' : 'Bypassed (click to switch on)'}
-        className="flex h-[18px] w-[18px] items-center justify-center rounded-full"
-        style={{
-          background: on ? 'radial-gradient(circle at 50% 35%, #8fc2ff, #3a7bd5)' : 'linear-gradient(180deg, #55565c, #3c3d42)',
-          border: '1px solid #141517',
-          boxShadow: on ? '0 0 6px rgba(91,156,246,0.6)' : 'inset 0 1px 0 rgba(255,255,255,0.12)',
-        }}
+        className={`flex h-[18px] w-[18px] items-center justify-center rounded-full border transition-colors ${on ? 'border-amber bg-amber' : 'border-line bg-panel-3'}`}
       >
-        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke={on ? '#08203f' : '#9a9ba1'} strokeWidth="1.6" strokeLinecap="round"><path d="M5 1v4" /><path d="M2.6 2.8a3.4 3.4 0 104.8 0" /></svg>
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke={on ? '#1c1d20' : '#8d8f96'} strokeWidth="1.6" strokeLinecap="round"><path d="M5 1v4" /><path d="M2.6 2.8a3.4 3.4 0 104.8 0" /></svg>
       </button>
-      <h3 className="font-cond text-[13px] font-semibold">{title}</h3>
-      <span className={`font-cond text-[12px] ${on ? 'text-dim' : 'text-warn'}`}>{on ? '' : 'Bypassed'}</span>
-      <span className="ml-auto flex items-center gap-1.5 font-cond text-[12px] text-dim">
+      <h3 className="text-[13px] font-semibold">{title}</h3>
+      {!on && <span className="text-[12px] text-dim">Bypassed</span>}
+      <span className="ml-auto flex items-center gap-1.5 text-[12px] text-dim">
         <span className="h-2 w-2 rounded-[2px]" style={{ background: color }} />{channel}
       </span>
     </header>

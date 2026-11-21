@@ -89,7 +89,7 @@ export function CompressorPanel({ params: p, onChange, readGr, readInput }: Prop
         </div>
       </div>
       <div>
-        <div className="mb-1 flex justify-between text-[10px] uppercase tracking-wider text-dim">
+        <div className="mb-1 flex justify-between text-[10px] text-dim">
           <span>Gain reduction</span>
           <span ref={grText} className="readout text-ink" />
         </div>

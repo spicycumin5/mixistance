@@ -14,7 +14,7 @@ export function SessionPanel() {
   return (
     <div className="flex flex-col gap-4 text-sm">
       <section className="flex flex-col gap-2">
-        <h4 className="text-[11px] uppercase tracking-wider text-dim">Audio</h4>
+        <h4 className="text-[11px] text-dim">Audio</h4>
         <button className="btn" disabled={hasDemo} onClick={() => loadDemo()}>
           {hasDemo ? '✓ Demo multitrack loaded' : 'Load demo multitrack'}
         </button>
@@ -29,7 +29,7 @@ export function SessionPanel() {
       </section>
 
       <section className="flex flex-col gap-2">
-        <h4 className="text-[11px] uppercase tracking-wider text-dim">Save settings</h4>
+        <h4 className="text-[11px] text-dim">Save settings</h4>
         <div className="flex gap-2">
           <input className="flex-1 rounded-md border border-line bg-panel-2 px-2 py-1 outline-none focus:border-amber" value={name} onChange={(e) => setName(e.target.value)} />
           <button className="btn btn-primary" onClick={() => { saveSession(name, useStore.getState().mix); setSessions(listSessions()); setMsg(`Saved "${name}"`) }}>Save</button>

@@ -21,7 +21,7 @@ function Stat({ label, dry, wet, unit = 'dB' }: { label: string; dry: number; we
   const d = wet - dry
   return (
     <div className="rounded border border-line bg-panel-2 px-2 py-1">
-      <div className="text-[9px] uppercase tracking-wider text-dim">{label}</div>
+      <div className="text-[9px] text-dim">{label}</div>
       <div className="readout text-xs">
         <span className="text-dim">{dry.toFixed(1)}</span>
         <span className="text-dim"> → </span>
@@ -37,7 +37,7 @@ function Explainer({ param, lab }: { param?: ParamDef; lab: LabDef<any> }) {
   if (!param) {
     return (
       <div className="text-xs leading-relaxed text-dim">
-        <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-ink">What does this knob do?</div>
+        <div className="mb-1 text-[10px] font-semibold text-ink">What does this knob do?</div>
         Hover over any control to see what it does, what to listen for, and which part of the graphs it affects. Those parts light up in yellow.
         <div className="mt-2">Tip: <span className="text-ink">Delta</span> plays only what the {lab.title.toLowerCase()} changed. It is the fastest way to hear what a setting is doing.</div>
       </div>
@@ -49,7 +49,7 @@ function Explainer({ param, lab }: { param?: ParamDef; lab: LabDef<any> }) {
       <div className="mb-1.5 text-sm font-semibold text-amber">{param.label}</div>
       {rows.map(([k, v]) => (
         <div key={k} className="mb-1.5">
-          <div className="text-[9px] font-semibold uppercase tracking-wider text-dim">{k}</div>
+          <div className="text-[9px] font-semibold text-dim">{k}</div>
           <div className="text-ink/90">{v}</div>
         </div>
       ))}
@@ -211,7 +211,7 @@ export function LabShell({ lab, initialParams }: { lab: LabDef<any>; initialPara
 
       <div className={`grid gap-3 ${render?.curve ? 'lg:grid-cols-[1fr_260px]' : ''}`}>
         <div className="min-w-0">
-          <div className="mb-1 flex items-center gap-3 text-[10px] uppercase tracking-wider text-dim">
+          <div className="mb-1 flex items-center gap-3 text-[10px] text-dim">
             <span>{render?.show?.label ?? 'Waveform'}</span>
             <span className="flex items-center gap-1 normal-case tracking-normal"><span className="inline-block h-2 w-3 bg-[#8b8a93]/60" />dry</span>
             <span className="flex items-center gap-1 normal-case tracking-normal"><span className="inline-block h-2 w-3 bg-amber" />processed</span>
@@ -267,7 +267,7 @@ export function LabShell({ lab, initialParams }: { lab: LabDef<any>; initialPara
             {lab.params.map((p) =>
               p.kind === 'choice' ? (
                 <div key={p.key} {...hoverProps(p.key)} className={`rounded-md p-1 ${activeKey === p.key ? 'bg-panel-3' : ''}`}>
-                  <div className="mb-1 text-[10px] uppercase tracking-wider text-dim">{p.label}</div>
+                  <div className="mb-1 text-[10px] text-dim">{p.label}</div>
                   <div className="flex overflow-hidden rounded border border-line">
                     {p.options.map((o) => (
                       <button key={o.value} onClick={() => set({ [p.key]: o.value })}

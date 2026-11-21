@@ -1,4 +1,4 @@
-import { useId, useRef } from 'react'
+import { useRef } from 'react'
 
 interface Props {
   label: string
@@ -27,7 +27,6 @@ export function Knob({ label, value, min, max, defaultValue, log, step, format, 
     return v
   }
   const drag = useRef<{ y: number; n: number } | null>(null)
-  const gid = useId().replace(/:/g, '')
   const norm = toNorm(value)
   const angle = -135 + norm * 270
   const r = size / 2 - 4
@@ -62,37 +61,23 @@ export function Knob({ label, value, min, max, defaultValue, log, step, format, 
         onDoubleClick={() => defaultValue !== undefined && onChange(defaultValue)}
         onWheel={(e) => onChange(fromNorm(norm - Math.sign(e.deltaY) * 0.02))}
       >
-        <defs>
-          <linearGradient id={`${gid}-cap`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#6a6b72" />
-            <stop offset="0.5" stopColor="#4a4b51" />
-            <stop offset="1" stopColor="#323337" />
-          </linearGradient>
-          <linearGradient id={`${gid}-rim`} x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="rgba(255,255,255,0.35)" />
-            <stop offset="1" stopColor="rgba(0,0,0,0.6)" />
-          </linearGradient>
-        </defs>
-        {/* Recessed ring track, then the value arc */}
-        <path d={arc(-135, 135)} stroke="#121315" strokeWidth={3.5} fill="none" strokeLinecap="round" />
+        <path d={arc(-135, 135)} stroke="#3a3b41" strokeWidth={2.5} fill="none" strokeLinecap="round" />
         {Math.abs(angle - zeroA) > 0.5 && (
           <path d={arc(Math.min(zeroA, angle), Math.max(zeroA, angle))} stroke={color} strokeWidth={2.5} fill="none" strokeLinecap="round" />
         )}
-        {/* Raised plastic cap: drop shadow, gradient body, reflective rim */}
-        <circle cx={size / 2} cy={size / 2 + 1} r={r - 4.5} fill="rgba(0,0,0,0.45)" />
-        <circle cx={size / 2} cy={size / 2} r={r - 5} fill={`url(#${gid}-cap)`} stroke={`url(#${gid}-rim)`} strokeWidth={1} />
+        <circle cx={size / 2} cy={size / 2} r={r - 4.5} fill="#3a3b41" />
         <line
-          x1={size / 2 + (r - 13) * Math.sin((angle * Math.PI) / 180) * 0.2}
-          y1={size / 2 - (r - 13) * Math.cos((angle * Math.PI) / 180) * 0.2}
-          x2={size / 2 + (r - 7) * Math.sin((angle * Math.PI) / 180)}
-          y2={size / 2 - (r - 7) * Math.cos((angle * Math.PI) / 180)}
-          stroke="#f2f2f4"
-          strokeWidth={1.75}
+          x1={size / 2}
+          y1={size / 2}
+          x2={size / 2 + (r - 6.5) * Math.sin((angle * Math.PI) / 180)}
+          y2={size / 2 - (r - 6.5) * Math.cos((angle * Math.PI) / 180)}
+          stroke="#e6e6e8"
+          strokeWidth={1.5}
           strokeLinecap="round"
         />
       </svg>
       {!bare && <div className="readout text-[10.5px] leading-none text-ink">{format ? format(value) : value.toFixed(1)}</div>}
-      {!bare && <div className="font-cond text-[10.5px] leading-tight text-dim">{label}</div>}
+      {!bare && <div className="text-[10px] leading-tight text-dim">{label}</div>}
     </div>
   )
 }

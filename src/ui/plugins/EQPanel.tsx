@@ -189,10 +189,12 @@ export function EQPanel({ bands, onBand, pre, post, ghost, height = 220, compact
             return (
               <div key={i} className={`flex flex-col items-center gap-1 rounded-md border border-line p-1.5 ${b.enabled ? '' : 'opacity-50'}`}>
                 <button
-                  className="chip w-full"
-                  style={{ background: b.enabled ? BAND_COLORS[i] : 'var(--color-panel-3)', color: b.enabled ? '#0f1013' : 'var(--color-dim)' }}
+                  className={`flex w-full items-center justify-center gap-1.5 rounded-[3px] px-1.5 py-0.5 text-[11px] font-medium ${b.enabled ? 'bg-panel-3 text-ink' : 'text-dim'}`}
+                  aria-pressed={b.enabled}
+                  title={b.enabled ? 'Band on (click to switch off)' : 'Band off (click to switch on)'}
                   onClick={() => onBand(i, { enabled: !b.enabled })}
                 >
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: BAND_COLORS[i] }} />
                   {BAND_LABELS[i]}
                 </button>
                 <Knob size={34} label="Freq" log min={20} max={20000} value={b.freq} format={fmtHz} color={BAND_COLORS[i]} onChange={(v) => onBand(i, { freq: Math.round(v) })} />

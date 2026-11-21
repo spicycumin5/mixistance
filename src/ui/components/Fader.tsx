@@ -25,7 +25,7 @@ export function Fader({ value, onChange, height = 180 }: { value: number; onChan
 
   return (
     <div className="flex items-stretch gap-1">
-      <div className="readout relative w-5 text-[8.5px] text-dim/80" style={{ height }}>
+      <div className="readout relative w-5 text-[8.5px] text-dim/70" style={{ height }}>
         {MARKS.map((m) => (
           <span key={m} className="absolute right-0 -translate-y-1/2" style={{ top: (1 - toPos(m)) * height }}>
             {m > 0 ? `+${m}` : m}
@@ -52,25 +52,13 @@ export function Fader({ value, onChange, height = 180 }: { value: number; onChan
         onDoubleClick={() => onChange(0)}
         onWheel={(e) => onChange(Math.round(fromPos(pos - Math.sign(e.deltaY) * 0.01) * 10) / 10)}
       >
-        {/* Groove */}
+        <div className="absolute left-1/2 top-0 h-full w-[3px] -translate-x-1/2 rounded-full bg-well" />
+        <div className="absolute left-1 right-1 h-px bg-white/15" style={{ top: (1 - toPos(0)) * height }} />
         <div
-          className="absolute left-1/2 top-0 h-full w-[5px] -translate-x-1/2 rounded-full"
-          style={{ background: '#0d0e10', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.06)' }}
-        />
-        {/* Unity mark */}
-        <div className="absolute left-0 h-px w-full bg-white/15" style={{ top: (1 - toPos(0)) * height }} />
-        {/* Cap: brushed metal, ribbed, with a centre line */}
-        <div
-          className="absolute left-0 h-8 w-6 -translate-y-1/2 rounded-[3px]"
-          style={{
-            top: (1 - pos) * height,
-            background:
-              'repeating-linear-gradient(180deg, rgba(0,0,0,0.0) 0 3px, rgba(0,0,0,0.18) 3px 4px), linear-gradient(180deg, #c9cad0, #8e9097 48%, #6b6d74 52%, #9fa1a8)',
-            border: '1px solid #1a1b1e',
-            boxShadow: '0 3px 5px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.6)',
-          }}
+          className="absolute left-0 h-7 w-6 -translate-y-1/2 rounded-[3px] border border-black/40 bg-[#c7c8cd]"
+          style={{ top: (1 - pos) * height }}
         >
-          <div className="mt-[14px] h-[2px] bg-white/90 shadow-[0_1px_0_rgba(0,0,0,0.5)]" />
+          <div className="mt-[12px] h-[2px] bg-[#2a2b2f]" />
         </div>
       </div>
     </div>

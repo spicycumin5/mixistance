@@ -19,8 +19,8 @@ export function EqThumb({ bands, on, onClick }: { bands: EqBand[]; on: boolean; 
   return (
     <button type="button" onClick={onClick} className="well block w-full rounded-[3px]" title={on ? 'EQ (click to open)' : 'EQ bypassed (click to open)'}>
       <svg viewBox="0 0 72 26" className="block h-[26px] w-full">
-        <line x1="0" y1="13" x2="72" y2="13" stroke="#2a2c31" strokeWidth="1" />
-        <path d={d} fill="none" stroke={on ? '#7fb6ff' : '#4b4d55'} strokeWidth="1.3" />
+        <line x1="0" y1="13" x2="72" y2="13" stroke="#26272b" strokeWidth="1" />
+        <path d={d} fill="none" stroke={on ? '#e6e6e8' : '#4b4d55'} strokeWidth="1.3" />
       </svg>
     </button>
   )
@@ -35,7 +35,7 @@ export function PeakReadout({ read }: { read: () => number }) {
     if (p > hold.current) hold.current = p
     if (!el.current) return
     el.current.textContent = fmtDb(hold.current)
-    el.current.style.color = hold.current > 0 ? '#ff6b6b' : 'var(--color-lcd)'
+    el.current.style.color = hold.current > 0 ? 'var(--color-bad)' : 'var(--color-ink)'
   })
   return (
     <button
@@ -50,43 +50,38 @@ export function PeakReadout({ read }: { read: () => number }) {
 
 export function DbReadout({ db }: { db: number }) {
   return (
-    <div className="well readout h-[17px] flex-1 rounded-[3px] text-center text-[10px] leading-[15px] text-lcd" title="Fader level (dB)">
+    <div className="well readout h-[17px] flex-1 rounded-[3px] text-center text-[10px] leading-[15px] text-ink" title="Fader level (dB)">
       {fmtDb(db)}
     </div>
   )
 }
 
-/** Colour-coded name plate at the foot of a strip. */
+/** Name plate at the foot of a strip; the track colour is a thin stripe on top. */
 export function NamePlate({ name, color, children }: { name: string; color?: string; children?: ReactNode }) {
   return (
-    <div
-      className="relative flex h-[22px] w-full items-center justify-center rounded-[3px] px-1 font-cond text-[11.5px] font-semibold"
-      style={{
-        background: color ? `linear-gradient(180deg, color-mix(in srgb, ${color} 100%, white 18%), ${color})` : 'linear-gradient(180deg, #5a5b62, #46474d)',
-        color: color ? '#111' : 'var(--color-ink)',
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.35), 0 1px 1px rgba(0,0,0,0.5)',
-        border: '1px solid rgba(0,0,0,0.55)',
-      }}
-      title={name}
-    >
-      <span className="truncate">{name}</span>
-      {children}
+    <div className="relative w-full overflow-hidden rounded-[3px] bg-panel-3" title={name}>
+      <div className="h-[3px]" style={{ background: color ?? 'var(--color-dim)' }} />
+      <div className="flex h-[20px] items-center justify-center px-1 text-[11px] font-medium text-ink">
+        <span className="truncate">{name}</span>
+        {children}
+      </div>
     </div>
   )
 }
 
-/** Insert/send slot with an optional lit (active) state. */
+/** Insert/send slot. Lit slots get an amber dot and bright text. */
 export function Slot({ label, lit, title, onClick, right }: { label: string; lit?: boolean; title?: string; onClick?: () => void; right?: ReactNode }) {
   return (
     <div
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
+      aria-pressed={onClick ? !!lit : undefined}
       onClick={onClick}
       onKeyDown={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onClick() } }}
       title={title}
-      className={`slot ${onClick ? 'cursor-pointer' : ''}`}
-      style={lit ? { background: 'linear-gradient(180deg, #4f86d6, #3a6cb8)', color: '#f2f6ff', borderColor: '#1c355c', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.25)' } : undefined}
+      className={`slot ${onClick ? 'cursor-pointer hover:text-ink' : ''} ${lit ? 'text-ink' : ''}`}
     >
+      {onClick && <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${lit ? 'bg-amber' : 'bg-panel-3'}`} />}
       <span className="truncate">{label}</span>
       {right && <span className="ml-auto flex items-center">{right}</span>}
     </div>

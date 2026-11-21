@@ -21,7 +21,7 @@ export function LearnView() {
           if (!labs.length) return null
           return (
             <div key={g} className="flex flex-col gap-1.5">
-              <div className="px-1 text-[10px] font-semibold uppercase tracking-wider text-dim">{g}</div>
+              <div className="px-1 text-[10px] font-semibold text-dim">{g}</div>
               {labs.map((l) => (
                 <button
                   key={l.id}

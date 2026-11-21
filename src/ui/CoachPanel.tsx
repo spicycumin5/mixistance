@@ -51,7 +51,7 @@ function SuggestionCard({ s }: { s: Suggestion }) {
     <div className="rounded-md border border-line bg-panel-2 p-2">
       <div className="flex items-start gap-2">
         <div className="flex-1">
-          <div className="text-[10px] uppercase tracking-wider text-dim">{name}</div>
+          <div className="text-[10px] text-dim">{name}</div>
           <div className="text-sm font-medium">{s.title}</div>
         </div>
         {undo ? (
@@ -105,12 +105,12 @@ export function CoachPanel() {
           <p className="text-sm leading-relaxed">{state.fb.overall}</p>
           {state.fb.strengths.length > 0 && (
             <div>
-              <h4 className="mb-1 text-[11px] uppercase tracking-wider text-good">Working well</h4>
+              <h4 className="mb-1 text-[11px] text-good">Working well</h4>
               <ul className="list-disc space-y-0.5 pl-5 text-xs text-ink/80">{state.fb.strengths.map((s, i) => <li key={i}>{s}</li>)}</ul>
             </div>
           )}
           <div className="flex flex-col gap-2">
-            <h4 className="text-[11px] uppercase tracking-wider text-dim">Issues</h4>
+            <h4 className="text-[11px] text-dim">Issues</h4>
             {state.fb.issues.map((iss, i) => (
               <div key={i} className="rounded-md border border-line p-2">
                 <div className="mb-0.5 flex items-center gap-2">
@@ -124,12 +124,12 @@ export function CoachPanel() {
           </div>
           {state.fb.suggestions.length > 0 && (
             <div className="flex flex-col gap-2">
-              <h4 className="text-[11px] uppercase tracking-wider text-dim">Suggested moves: try each one and listen</h4>
+              <h4 className="text-[11px] text-dim">Suggested moves: try each one and listen</h4>
               {state.fb.suggestions.map((s, i) => <SuggestionCard key={i} s={s} />)}
             </div>
           )}
-          <div className="rounded-md border border-violet-400/30 bg-violet-400/5 p-2 text-xs">
-            <span className="font-semibold text-violet-300">Practise next: </span>{state.fb.nextFocus}
+          <div className="rounded-md border border-line bg-panel-2 p-2 text-xs">
+            <span className="font-semibold text-ink">Practise next: </span>{state.fb.nextFocus}
           </div>
         </div>
       )}
