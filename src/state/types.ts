@@ -16,6 +16,8 @@ export interface ChannelState {
   compOn: boolean
   reverbSendDb: number // -60 = off
   delaySendDb: number
+  /** Region start on the timeline, in seconds (moved by dragging in Tracks). */
+  offset?: number
 }
 
 export interface MixState {

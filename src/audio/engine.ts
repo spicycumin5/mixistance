@@ -32,7 +32,11 @@ class Engine {
   loudness: LoudnessReading = { momentary: -Infinity, shortTerm: -Infinity, integrated: -Infinity, truePeakDb: -Infinity }
 
   readonly strips = new Map<string, ChannelStrip>()
+  /** Playback buffers: each track's audio placed at its offset, all the same length. */
   readonly buffers = new Map<string, AudioBuffer>()
+  /** Original audio per track, as loaded. */
+  readonly rawBuffers = new Map<string, AudioBuffer>()
+  private offsets = new Map<string, number>()
   private sources: AudioBufferSourceNode[] = []
   private refBuffer?: AudioBuffer
   private refSource?: AudioBufferSourceNode
@@ -101,17 +105,44 @@ class Engine {
   }
 
   setBuffer(id: string, buf: AudioBuffer) {
-    this.buffers.set(id, buf)
+    this.rawBuffers.set(id, buf)
     if (!this.strips.has(id)) {
       this.strips.set(id, new ChannelStrip(this.ctx, this.mixIn, this.reverb.input, this.delay.input))
     }
-    if (this.playing) this.restart()
+    this.relayout()
   }
 
   removeChannel(id: string) {
     this.strips.get(id)?.dispose()
     this.strips.delete(id)
-    this.buffers.delete(id)
+    this.rawBuffers.delete(id)
+    this.offsets.delete(id)
+    this.relayout()
+  }
+
+  /** Start time (seconds) of a track's region on the timeline. */
+  offsetOf(id: string) {
+    return this.offsets.get(id) ?? 0
+  }
+
+  /**
+   * Lay every track's audio into a buffer that starts at song time 0, so all tracks share
+   * one length. Playback and looping then work exactly as for unmoved stems.
+   */
+  private relayout() {
+    if (!this.ctx) return
+    const fs = this.ctx.sampleRate
+    let len = 0
+    for (const [id, raw] of this.rawBuffers) len = Math.max(len, Math.round(this.offsetOf(id) * fs) + raw.length)
+    for (const [id, raw] of this.rawBuffers) {
+      const off = Math.round(this.offsetOf(id) * fs)
+      if (off === 0 && raw.length === len && raw.sampleRate === fs) { this.buffers.set(id, raw); continue }
+      const out = this.ctx.createBuffer(raw.numberOfChannels, len, raw.sampleRate)
+      for (let c = 0; c < raw.numberOfChannels; c++) out.getChannelData(c).set(raw.getChannelData(c).subarray(0, len - off), off)
+      this.buffers.set(id, out)
+    }
+    for (const id of [...this.buffers.keys()]) if (!this.rawBuffers.has(id)) this.buffers.delete(id)
+    if (this.playing) this.restart()
   }
 
   setReference(buf: AudioBuffer | undefined) {
@@ -143,6 +174,13 @@ class Engine {
     if (!this.ctx) return
     const t = this.ctx.currentTime
     const anySolo = mix.channels.some((c) => c.solo)
+    // Re-place audio only when a region actually moved.
+    let moved = false
+    for (const ch of mix.channels) {
+      const off = Math.max(0, ch.offset ?? 0)
+      if (this.offsetOf(ch.id) !== off) { this.offsets.set(ch.id, off); moved = true }
+    }
+    if (moved) this.relayout()
     for (const ch of mix.channels) {
       this.strips.get(ch.id)?.apply(ch, !ch.mute && (!anySolo || ch.solo))
     }
