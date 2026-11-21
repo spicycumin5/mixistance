@@ -35,6 +35,15 @@ The coach uses `claude-opus-5-5` by default. Set `MIXISTANCE_MODEL` to use anoth
 
 The demo multitrack is generated in code, so it is royalty-free. It has built-in problems to fix: a boomy kick, inconsistent snare hits, brittle hats, a 250 Hz bump in the bass, muddy keys, and a vocal with a 3.5 kHz resonance and uneven dynamics.
 
+## Deploy (Vercel)
+
+The app is a static Vite build plus one serverless function (`api/feedback.ts`) for the coach. `vercel.json` configures both.
+
+1. Import the GitHub repo at [vercel.com/new](https://vercel.com/new). The defaults from `vercel.json` work as-is.
+2. The coach is **off** unless you set `ANTHROPIC_API_KEY` in the project's environment variables. Anyone with the URL could then use it with your credits, so protect the deployment first. Without a key, everything except the coach works.
+
+Every push to `main` redeploys.
+
 ## Develop
 
 ```bash
@@ -47,4 +56,4 @@ npm run build   # type-check and production build
 - `src/lab/`: processor lab definitions (parameters, explanations, tours, offline renders)
 - `src/training/`: lesson definitions, drill logic, progress
 - `src/ui/`: React components
-- `server/`: Claude-backed coach API
+- `server/`: Claude-backed coach API (`coach.ts` shared by the local Express server and `api/feedback.ts` on Vercel)
