@@ -5,6 +5,7 @@ import { labPlayer } from './audio/labPlayer'
 import { useLabNav } from './lab/nav'
 import { useStore } from './state/store'
 import { CoachPanel } from './ui/CoachPanel'
+import { Tracks } from './ui/arrange/Tracks'
 import { LearnView } from './ui/learn/LearnView'
 import { LessonPanel } from './ui/LessonPanel'
 import { ChannelDetail } from './ui/mixer/ChannelDetail'
@@ -103,6 +104,7 @@ export default function App() {
       ) : (
         <main className="grid flex-1 gap-3 p-3 2xl:grid-cols-[1fr_380px] xl:grid-cols-[1fr_340px]">
           <div className="flex min-w-0 flex-col gap-3">
+            <Tracks />
             <div className="flex max-w-full gap-3 self-start overflow-x-auto rounded-[6px] border border-line bg-well p-2">
               <div className="flex gap-1.5">{channels.map((c) => <ChannelStripView key={c.id} ch={c} />)}</div>
               <div className="w-px shrink-0 bg-line" />

@@ -19,7 +19,7 @@ export function ChannelStripView({ ch }: { ch: ChannelState }) {
     <div
       onClick={() => select(ch.id)}
       className="surface group flex w-[86px] shrink-0 cursor-pointer flex-col items-center gap-1.5 rounded-[4px] px-1.5 pb-1.5 pt-2"
-      style={selected ? { borderColor: 'var(--color-amber)' } : undefined}
+      style={selected ? { background: 'var(--color-panel-2)', borderColor: '#6a6a6a' } : undefined}
     >
       <EqThumb bands={ch.eq} on={ch.eqOn} onClick={() => select(ch.id)} />
 
@@ -64,7 +64,7 @@ export function ChannelStripView({ ch }: { ch: ChannelState }) {
           className="key"
           aria-pressed={ch.mute}
           title="Mute"
-          style={ch.mute ? { background: '#c7c8cd', color: '#1c1d20', borderColor: '#c7c8cd' } : undefined}
+          style={ch.mute ? { background: 'var(--color-mute)', color: '#0b1f33', borderColor: 'var(--color-mute)' } : undefined}
           onClick={() => setChannel(ch.id, { mute: !ch.mute })}
         >M</button>
         <button
@@ -72,7 +72,7 @@ export function ChannelStripView({ ch }: { ch: ChannelState }) {
           className="key"
           aria-pressed={ch.solo}
           title="Solo (alt-click: exclusive)"
-          style={ch.solo ? { background: 'var(--color-amber)', color: '#1c1d20', borderColor: 'var(--color-amber)' } : undefined}
+          style={ch.solo ? { background: 'var(--color-solo)', color: '#2b2200', borderColor: 'var(--color-solo)' } : undefined}
           onClick={(e) => {
             // Alt/Cmd-click = exclusive solo, a common DAW convention.
             if (e.altKey || e.metaKey) {

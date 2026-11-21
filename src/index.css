@@ -1,23 +1,30 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-/* Quiet console: flat graphite, hairline borders, one accent (amber). */
+/* Logic-style dark palette: neutral greys, near-black dividers, functional colours
+   (green play, yellow cycle/solo, blue mute, steel-blue active plug-in slots). Amber
+   stays as the analysis/signal colour and the brand. */
 @theme {
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   --font-cond: 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  --color-chassis: #1c1d20;
-  --color-panel: #242528;
-  --color-panel-2: #2b2c30;
-  --color-panel-3: #35363b;
-  --color-well: #17181a;
-  --color-line: #33343a;
+  --color-chassis: #1d1d1d;
+  --color-panel: #2a2a2a;
+  --color-panel-2: #323232;
+  --color-panel-3: #3d3d3d;
+  --color-well: #171717;
+  --color-line: #111111;
   --color-edge: transparent;
-  --color-ink: #e6e6e8;
-  --color-dim: #8d8f96;
+  --color-ink: #dedede;
+  --color-dim: #8e8e8e;
   --color-amber: #f0a43a;
-  --color-sel: #f0a43a;
-  --color-lcd: #e6e6e8;
+  --color-sel: #5a5a5a;
+  --color-lcd: #dedede;
+  --color-play: #3ccf6e;
+  --color-cycle: #e9c43b;
+  --color-mute: #3d9bf0;
+  --color-solo: #e9c43b;
+  --color-slot: #3e5774;
   --color-good: #6fcf8e;
   --color-warn: #e8c547;
   --color-bad: #ef7d7d;
@@ -40,8 +47,8 @@ body {
 .btn {
   @apply rounded-[4px] border border-line bg-panel-3 px-3 py-1.5 text-sm text-ink transition-colors disabled:opacity-40;
 }
-.btn:hover:not(:disabled) { background: #3e3f45; }
-.btn:active:not(:disabled) { background: #2f3035; }
+.btn:hover:not(:disabled) { background: #474747; }
+.btn:active:not(:disabled) { background: #333333; }
 .btn-primary { @apply border-amber bg-amber font-semibold text-black; }
 .btn-primary:hover:not(:disabled) { background: #f6b257; }
 

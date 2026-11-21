@@ -79,9 +79,9 @@ export function Slot({ label, lit, title, onClick, right }: { label: string; lit
       onClick={onClick}
       onKeyDown={(e) => { if (onClick && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); onClick() } }}
       title={title}
-      className={`slot ${onClick ? 'cursor-pointer hover:text-ink' : ''} ${lit ? 'text-ink' : ''}`}
+      className={`slot ${onClick ? 'cursor-pointer hover:text-ink' : ''} ${lit ? '!bg-slot text-ink' : ''}`}
     >
-      {onClick && <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${lit ? 'bg-amber' : 'bg-panel-3'}`} />}
+      
       <span className="truncate">{label}</span>
       {right && <span className="ml-auto flex items-center">{right}</span>}
     </div>

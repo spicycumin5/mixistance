@@ -30,7 +30,8 @@ export function Transport() {
   const playing = usePolled(() => engine.playing, 100)
   const duration = usePolled(() => (engine.ctx ? engine.duration : 0), 500)
   const bpm = useStore((s) => s.mix.bpm)
-  const [loop, setLoop] = useState(engine.loop)
+  // The engine owns the cycle region; the timeline ruler can change it too.
+  const loop = usePolled(() => engine.loop, 100)
   const [refOn, setRefOn] = useState(false)
   const [refDb, setRefDb] = useState(-6)
   const hasRef = usePolled(() => engine.hasReference, 500)
@@ -60,7 +61,6 @@ export function Transport() {
     const bar = (60 / bpm) * 4
     const start = loop.end > loop.start ? loop.start : Math.floor(engine.position / bar) * bar
     const next = { enabled: !loop.enabled, start, end: loop.end > loop.start ? loop.end : Math.min(duration, start + bar * 4) }
-    setLoop(next)
     engine.setLoop(next)
   }
 
@@ -68,10 +68,10 @@ export function Transport() {
     <div className="flex items-center gap-3">
       <div className="flex gap-1">
         <TBtn label="Go to start" onClick={() => engine.seek(loop.enabled ? loop.start : 0)}>{Icon.start}</TBtn>
-        <TBtn label={playing ? 'Stop (Space)' : 'Play (Space)'} lit={playing} litColor="var(--color-amber)" onClick={() => (engine.playing ? engine.stop() : engine.play())}>
+        <TBtn label={playing ? 'Stop (Space)' : 'Play (Space)'} lit={playing} litColor="var(--color-play)" onClick={() => (engine.playing ? engine.stop() : engine.play())}>
           {playing ? Icon.stop : Icon.play}
         </TBtn>
-        <TBtn label="Cycle 4 bars" lit={loop.enabled} litColor="var(--color-amber)" onClick={toggleLoop}>{Icon.cycle}</TBtn>
+        <TBtn label="Cycle (drag in the ruler to set the range)" lit={loop.enabled} litColor="var(--color-cycle)" onClick={toggleLoop}>{Icon.cycle}</TBtn>
       </div>
 
       {/* LCD */}
@@ -105,7 +105,7 @@ export function Transport() {
           }}
         >
           {loop.enabled && duration > 0 && (
-            <div className="absolute inset-y-0 bg-amber/35" style={{ left: `${(loop.start / duration) * 100}%`, width: `${((loop.end - loop.start) / duration) * 100}%` }} />
+            <div className="absolute inset-y-0 bg-cycle/50" style={{ left: `${(loop.start / duration) * 100}%`, width: `${((loop.end - loop.start) / duration) * 100}%` }} />
           )}
           <div ref={head} className="absolute inset-y-0 w-[3px] bg-ink" />
         </div>
