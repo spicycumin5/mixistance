@@ -1,7 +1,7 @@
 // Vercel serverless function for the mix coach: POST /api/feedback.
 // Set ANTHROPIC_API_KEY (and optionally MIXISTANCE_MODEL) in the Vercel project settings.
 
-import { handleFeedback } from '../server/coach'
+import { handleFeedback } from '../server/coach.js'
 
 export async function POST(request: Request): Promise<Response> {
   const text = await request.text()
