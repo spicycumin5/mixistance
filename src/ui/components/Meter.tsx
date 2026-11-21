@@ -29,7 +29,10 @@ export function Meter({ read, height = 180, width = 8 }: { read: () => { peakDb:
   })
 
   return (
-    <div className="relative overflow-hidden rounded-sm bg-black/70" style={{ height, width }}>
+    <div
+      className="relative overflow-hidden rounded-[2px]"
+      style={{ height, width, background: '#0b0c0d', boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.06)' }}
+    >
       <div
         ref={peakEl}
         className="absolute bottom-0 w-full opacity-50"
@@ -41,6 +44,8 @@ export function Meter({ read, height = 180, width = 8 }: { read: () => { peakDb:
         style={{ background: 'linear-gradient(to top, #22c55e 0%, #22c55e 70%, #facc15 85%, #ef4444 100%)', backgroundSize: `100% ${height}px`, backgroundPosition: 'bottom' }}
       />
       <div ref={holdEl} className="absolute h-px w-full" />
+      {/* LED segmentation */}
+      <div className="pointer-events-none absolute inset-0" style={{ background: 'repeating-linear-gradient(0deg, transparent 0 2px, rgba(11,12,13,0.9) 2px 3px)' }} />
     </div>
   )
 }

@@ -1,16 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* Graphite console palette: a DAW mixer lit from above. */
 @theme {
   --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-cond: 'IBM Plex Sans Condensed', 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
-  --color-panel: #17181c;
-  --color-panel-2: #1f2026;
-  --color-panel-3: #2a2b33;
-  --color-line: #33343d;
-  --color-ink: #e8e6e1;
-  --color-dim: #8b8a93;
+  --color-chassis: #232427;
+  --color-panel: #2e2f33;
+  --color-panel-2: #37383d;
+  --color-panel-3: #45464c;
+  --color-well: #18191c;
+  --color-line: #141517;
+  --color-edge: rgba(255, 255, 255, 0.07);
+  --color-ink: #e4e4e6;
+  --color-dim: #96979e;
+  --color-sel: #5b9cf6;
   --color-amber: #f5a524;
+  --color-lcd: #d6e6ff;
   --color-good: #4ade80;
   --color-warn: #facc15;
   --color-bad: #f87171;
@@ -19,16 +26,74 @@
 html, body, #root { height: 100%; }
 body {
   margin: 0;
-  background: #0f1013;
+  background: var(--color-chassis);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
 }
+:focus-visible { outline: 2px solid var(--color-sel); outline-offset: 1px; }
 .readout { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
-.btn {
-  @apply rounded-md border border-line bg-panel-2 px-3 py-1.5 text-sm text-ink transition hover:bg-panel-3 disabled:opacity-40;
+
+/* Raised graphite surface (panels, strips, buttons). */
+.surface {
+  background: linear-gradient(180deg, #36373c, #2e2f33 45%, #2a2b2f);
+  border: 1px solid var(--color-line);
+  box-shadow: inset 0 1px 0 var(--color-edge), 0 1px 2px rgba(0, 0, 0, 0.35);
 }
-.btn-primary { @apply border-amber bg-amber text-black font-semibold hover:bg-amber/90; }
-.chip { @apply rounded px-1.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide; }
+/* Recessed display well (LCDs, graphs, readouts). */
+.well {
+  background: var(--color-well);
+  border: 1px solid #0e0f11;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6), 0 1px 0 var(--color-edge);
+}
+
+.btn {
+  @apply rounded-[5px] px-3 py-1.5 text-sm text-ink disabled:opacity-40;
+  background: linear-gradient(180deg, #4a4b51, #3c3d42);
+  border: 1px solid #17181b;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 1px 1px rgba(0, 0, 0, 0.4);
+  transition: background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.btn:hover:not(:disabled) { background: linear-gradient(180deg, #53545a, #43444a); }
+.btn:active:not(:disabled) {
+  transform: translateY(1px);
+  background: linear-gradient(180deg, #333438, #3d3e43);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.45);
+}
+.btn-primary {
+  @apply font-semibold text-black;
+  background: linear-gradient(180deg, #ffbf4d, #e8961a);
+  border-color: #6b4508;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), 0 1px 1px rgba(0, 0, 0, 0.4);
+}
+.btn-primary:hover:not(:disabled) { background: linear-gradient(180deg, #ffc966, #f0a028); }
+
+.chip { @apply rounded-[3px] px-1.5 py-0.5 text-[11.5px] font-semibold; font-family: var(--font-cond); }
+
+/* Small square console button (mute, solo, slot toggles). Lit state set via style. */
+.key {
+  @apply flex h-[18px] items-center justify-center rounded-[3px] text-[10px] font-semibold;
+  font-family: var(--font-cond);
+  background: linear-gradient(180deg, #4b4c52, #3a3b40);
+  border: 1px solid #141517;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.09);
+  color: var(--color-dim);
+}
+.key:active { box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5); }
+
+/* Insert / send slot, like a recessed plug-in slot on a console strip. */
+.slot {
+  @apply flex h-[17px] w-full items-center overflow-hidden rounded-[3px] px-1.5 text-[10px];
+  font-family: var(--font-cond);
+  background: #232428;
+  border: 1px solid #121315;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
+  color: var(--color-dim);
+}
+
 .prose-lesson p { @apply mb-2 leading-relaxed; }
 .prose-lesson strong { @apply text-amber font-semibold; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition-duration: 0ms !important; }
+}

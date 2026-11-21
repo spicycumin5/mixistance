@@ -27,44 +27,62 @@ export function ChannelDetail() {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-center gap-3">
-        <span className="h-3 w-3 rounded-full" style={{ background: ch.color }} />
-        <h2 className="text-base font-semibold">{ch.name}</h2>
+        <span className="h-3 w-3 rounded-[2px]" style={{ background: ch.color }} />
+        <h2 className="font-cond text-[15px] font-semibold">{ch.name}</h2>
         <Knob size={30} label="Trim" min={-24} max={24} defaultValue={0} value={ch.gainDb} step={0.5} format={(v) => fmtDb(v)} onChange={(v) => setChannel(ch.id, { gainDb: v })} />
         <label
           className="ml-auto flex cursor-pointer items-center gap-2 text-xs text-dim"
           title="Loudness-match each processor's output to its input, so toggling EQ/CMP in and out compares tone and dynamics, not volume. Louder always sounds 'better', so this is how pros A/B."
         >
-          <input type="checkbox" checked={matched} onChange={toggleMatch} className="accent-amber" />
+          <input type="checkbox" checked={matched} onChange={toggleMatch} className="accent-[#5b9cf6]" />
           Level-matched A/B
         </label>
       </div>
       <div className="grid gap-3 xl:grid-cols-[1.6fr_1fr]">
-        <section className="rounded-lg border border-line bg-panel p-3">
-          <header className="mb-2 flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Parametric EQ</h3>
-            <button
-              className={`chip ml-auto ${ch.eqOn ? 'bg-sky-500 text-black' : 'bg-panel-3 text-dim'}`}
-              onClick={() => setChannel(ch.id, { eqOn: !ch.eqOn })}
-            >{ch.eqOn ? 'In' : 'Bypassed'}</button>
-          </header>
-          <EQPanel bands={ch.eq} onBand={(i, p) => setEqBand(ch.id, i, p)} pre={strip?.preProbe} post={strip?.compProbe} />
+        <section className="surface overflow-hidden rounded-[6px]">
+          <PluginBar title="Parametric EQ" channel={ch.name} color={ch.color} on={ch.eqOn} onToggle={() => setChannel(ch.id, { eqOn: !ch.eqOn })} />
+          <div className="p-3"><EQPanel bands={ch.eq} onBand={(i, p) => setEqBand(ch.id, i, p)} pre={strip?.preProbe} post={strip?.compProbe} /></div>
         </section>
-        <section className="rounded-lg border border-line bg-panel p-3">
-          <header className="mb-2 flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Compressor</h3>
-            <button
-              className={`chip ml-auto ${ch.compOn ? 'bg-amber text-black' : 'bg-panel-3 text-dim'}`}
-              onClick={() => setChannel(ch.id, { compOn: !ch.compOn })}
-            >{ch.compOn ? 'In' : 'Bypassed'}</button>
-          </header>
-          <CompressorPanel
+        <section className="surface overflow-hidden rounded-[6px]">
+          <PluginBar title="Compressor" channel={ch.name} color={ch.color} on={ch.compOn} onToggle={() => setChannel(ch.id, { compOn: !ch.compOn })} />
+          <div className="p-3"><CompressorPanel
             params={ch.comp}
             onChange={(p) => setComp(ch.id, p)}
             readGr={() => (ch.compOn ? (engine.strips.get(ch.id)?.gr ?? 0) : 0)}
             readInput={() => engine.strips.get(ch.id)?.compProbe.levels().peakDb ?? -120}
-          />
+          /></div>
         </section>
       </div>
     </div>
+  )
+}
+
+/** Plug-in window title bar: power button, plug-in name, channel it sits on. */
+function PluginBar({ title, channel, color, on, onToggle }: { title: string; channel: string; color: string; on: boolean; onToggle: () => void }) {
+  return (
+    <header
+      className="flex items-center gap-2 px-2.5 py-1.5"
+      style={{ background: 'linear-gradient(180deg, #45464c, #393a3f)', borderBottom: '1px solid #141517', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)' }}
+    >
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-pressed={on}
+        title={on ? 'On (click to bypass)' : 'Bypassed (click to switch on)'}
+        className="flex h-[18px] w-[18px] items-center justify-center rounded-full"
+        style={{
+          background: on ? 'radial-gradient(circle at 50% 35%, #8fc2ff, #3a7bd5)' : 'linear-gradient(180deg, #55565c, #3c3d42)',
+          border: '1px solid #141517',
+          boxShadow: on ? '0 0 6px rgba(91,156,246,0.6)' : 'inset 0 1px 0 rgba(255,255,255,0.12)',
+        }}
+      >
+        <svg width="9" height="9" viewBox="0 0 10 10" fill="none" stroke={on ? '#08203f' : '#9a9ba1'} strokeWidth="1.6" strokeLinecap="round"><path d="M5 1v4" /><path d="M2.6 2.8a3.4 3.4 0 104.8 0" /></svg>
+      </button>
+      <h3 className="font-cond text-[13px] font-semibold">{title}</h3>
+      <span className={`font-cond text-[12px] ${on ? 'text-dim' : 'text-warn'}`}>{on ? '' : 'Bypassed'}</span>
+      <span className="ml-auto flex items-center gap-1.5 font-cond text-[12px] text-dim">
+        <span className="h-2 w-2 rounded-[2px]" style={{ background: color }} />{channel}
+      </span>
+    </header>
   )
 }

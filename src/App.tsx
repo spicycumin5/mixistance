@@ -15,6 +15,7 @@ import { TrainView } from './ui/train/TrainView'
 import { Transport } from './ui/Transport'
 
 type View = 'mix' | 'train' | 'learn'
+const SIDE_LABEL: Record<Side, string> = { lessons: 'Lessons', coach: 'AI coach', session: 'Session' }
 const VIEW_LABEL: Record<View, string> = { mix: 'Mix', learn: 'Learn', train: 'Ear Training' }
 type Side = 'lessons' | 'coach' | 'session'
 
@@ -22,7 +23,7 @@ function Welcome() {
   const { loadDemo, addFiles } = useStore.getState()
   const [busy, setBusy] = useState(false)
   return (
-    <div className="mx-auto mt-16 max-w-xl rounded-xl border border-line bg-panel p-8 text-center">
+    <div className="surface mx-auto mt-16 max-w-xl rounded-[8px] p-8 text-center">
       <h2 className="mb-2 text-2xl font-semibold">Practise mixing like a pro</h2>
       <p className="mb-6 text-sm text-dim">
         Load the demo multitrack, which has deliberate problems to fix and guided lessons, or bring your own stems. Then use the AI coach for feedback, and the Train tab for ear training.
@@ -73,21 +74,28 @@ export default function App() {
 
   return (
     <div className="flex min-h-full flex-col">
-      <header className="sticky top-0 z-10 flex flex-wrap items-center gap-4 border-b border-line bg-[#0f1013]/95 px-4 py-2 backdrop-blur">
+      <header
+        className="sticky top-0 z-10 flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-2"
+        style={{ background: 'linear-gradient(180deg, #3b3c41, #2f3034)', borderBottom: '1px solid #121315', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08), 0 2px 6px rgba(0,0,0,0.35)' }}
+      >
         <div className="flex items-baseline gap-2">
-          <span className="text-lg font-bold tracking-tight">mix<span className="text-amber">istance</span></span>
-          <span className="hidden text-[11px] text-dim sm:inline">mixing practice studio</span>
+          <span className="text-[17px] font-bold tracking-tight">mix<span className="text-amber">istance</span></span>
+          <span className="hidden font-cond text-[11px] text-dim md:inline">mixing practice studio</span>
         </div>
-        <nav className="flex overflow-hidden rounded-md border border-line">
+        {view === 'mix' && channels.length > 0 && <Transport />}
+        <nav className="ml-auto flex gap-px rounded-[6px] bg-[#141517] p-px" aria-label="View">
           {(['mix', 'learn', 'train'] as const).map((v) => (
             <button
               key={v}
               onClick={() => go(v)}
-              className={`px-4 py-1.5 text-sm font-medium ${view === v ? 'bg-panel-3 text-ink' : 'bg-panel text-dim hover:text-ink'}`}
+              aria-current={view === v ? 'page' : undefined}
+              className="rounded-[5px] px-3.5 py-1 font-cond text-[13px] font-medium transition-colors"
+              style={view === v
+                ? { background: 'linear-gradient(180deg, #5f9ff7, #3f7fd8)', color: '#fff', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3)' }
+                : { background: 'linear-gradient(180deg, #46474d, #393a3f)', color: 'var(--color-dim)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.08)' }}
             >{VIEW_LABEL[v]}</button>
           ))}
         </nav>
-        {view === 'mix' && channels.length > 0 && <div className="ml-auto"><Transport /></div>}
       </header>
 
       {view === 'learn' ? (
@@ -99,20 +107,21 @@ export default function App() {
       ) : (
         <main className="grid flex-1 gap-3 p-3 2xl:grid-cols-[1fr_380px] xl:grid-cols-[1fr_340px]">
           <div className="flex min-w-0 flex-col gap-3">
-            <div className="flex gap-3 overflow-x-auto pb-1">
-              <div className="flex gap-2">{channels.map((c) => <ChannelStripView key={c.id} ch={c} />)}</div>
+            <div className="well flex gap-3 overflow-x-auto rounded-[6px] p-2" style={{ background: '#1b1c1f' }}>
+              <div className="flex gap-1.5">{channels.map((c) => <ChannelStripView key={c.id} ch={c} />)}</div>
+              <div className="w-px shrink-0 bg-black/60" />
               <MasterStrip />
             </div>
             <ChannelDetail />
           </div>
-          <aside className="flex flex-col rounded-lg border border-line bg-panel xl:max-h-[calc(100vh-70px)] xl:sticky xl:top-[58px]">
+          <aside className="surface flex flex-col rounded-[6px] xl:max-h-[calc(100vh-70px)] xl:sticky xl:top-[62px]">
             <div className="flex border-b border-line">
               {(['lessons', 'coach', 'session'] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => setSide(s)}
-                  className={`flex-1 py-2 text-xs font-semibold uppercase tracking-wider ${side === s ? 'border-b-2 border-amber text-ink' : 'text-dim hover:text-ink'}`}
-                >{s === 'coach' ? 'AI Coach' : s}</button>
+                  className={`flex-1 py-2 font-cond text-[13px] font-medium ${side === s ? 'border-b-2 border-sel text-ink' : 'border-b-2 border-transparent text-dim hover:text-ink'}`}
+                >{SIDE_LABEL[s]}</button>
               ))}
             </div>
             <div className="flex-1 overflow-y-auto p-3">
