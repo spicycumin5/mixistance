@@ -1,7 +1,18 @@
 // Send effects: algorithmic-IR reverb and a tempo-synced filtered delay.
 
-export function makeReverbIR(ctx: BaseAudioContext, decaySec: number, preDelayMs = 18): AudioBuffer {
+export interface ReverbIROptions {
+  /** 0-1: how much faster highs decay than lows. 0.5 matches the mixer's reverb. */
+  damping?: number
+  /** 0-1: level of discrete early reflections. 0 (the default) means none. */
+  early?: number
+  /** Noise source returning [0, 1) like Math.random. Pass a seeded one for repeatable IRs. */
+  random?: () => number
+}
+
+export function makeReverbIR(ctx: BaseAudioContext, decaySec: number, preDelayMs = 18, opts: ReverbIROptions = {}): AudioBuffer {
   const fs = ctx.sampleRate
+  const rand = opts.random ?? Math.random
+  const darken = decaySec * 0.35 * Math.pow(4, 1 - 2 * (opts.damping ?? 0.5))
   const len = Math.floor(fs * (decaySec + preDelayMs / 1000))
   const ir = ctx.createBuffer(2, len, fs)
   const pre = Math.floor((fs * preDelayMs) / 1000)
@@ -12,9 +23,17 @@ export function makeReverbIR(ctx: BaseAudioContext, decaySec: number, preDelayMs
       const t = (i - pre) / fs
       // -60 dB at decaySec; high frequencies decay faster via a darkening lowpass.
       const env = Math.pow(10, (-3 * t) / decaySec)
-      const k = 0.15 + 0.8 * Math.exp(-t / (decaySec * 0.35))
-      lp += k * ((Math.random() * 2 - 1) - lp)
+      const k = 0.15 + 0.8 * Math.exp(-t / darken)
+      lp += k * ((rand() * 2 - 1) - lp)
       d[i] = lp * env
+    }
+    // Early reflections: a few distinct echoes off nearby walls, 5-70 ms after pre-delay.
+    if (opts.early) {
+      for (let k = 0; k < 10; k++) {
+        const ms = 5 + k * 6.5 + rand() * 5
+        const i = pre + Math.floor((ms / 1000) * fs)
+        if (i < len) d[i] += opts.early * (rand() > 0.5 ? 1 : -1) * 0.9 * Math.pow(0.82, k)
+      }
     }
   }
   return ir

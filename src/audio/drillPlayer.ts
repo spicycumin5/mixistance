@@ -5,15 +5,11 @@
 
 import type { EqBand } from '../dsp/biquad'
 import type { CompressorParams } from '../dsp/compressorCore'
-import { DEMO_BPM, generateDemoStems, pinkNoise } from './demoStems'
 import { EqChain } from './eq'
 import { engine } from './engine'
+import { sourceData, type DrillSource } from './sources'
 
-export type DrillSource = 'pink' | 'drums' | 'vox' | 'bass' | 'keys' | 'mix'
-
-export const SOURCE_LABELS: Record<DrillSource, string> = {
-  pink: 'Pink noise', drums: 'Drums', vox: 'Vocal', bass: 'Bass', keys: 'Keys', mix: 'Full mix',
-}
+export { SOURCE_LABELS, type DrillSource } from './sources'
 
 export type ProcSpec =
   | { kind: 'dry' }
@@ -34,24 +30,7 @@ function sourceBuffer(src: DrillSource): AudioBuffer {
   const hit = cache.get(src)
   if (hit) return hit
   const fs = ctx.sampleRate
-  let data: Float32Array
-  if (src === 'pink') {
-    data = pinkNoise(fs, 8)
-  } else {
-    const stems = generateDemoStems(fs)
-    // 2 bars is plenty to loop and keeps comparisons tight.
-    const len = Math.floor((60 / DEMO_BPM) * 8 * fs)
-    const pickIds = src === 'drums' ? ['kick', 'snare', 'hats'] : src === 'mix' ? stems.map((s) => s.id) : [src]
-    data = new Float32Array(len)
-    for (const s of stems) {
-      if (!pickIds.includes(s.id)) continue
-      const g = src === 'mix' || src === 'drums' ? Math.pow(10, s.faderDb / 20) : 1
-      for (let i = 0; i < len; i++) data[i] += s.data[i] * g
-    }
-    let m = 0
-    for (const x of data) m = Math.max(m, Math.abs(x))
-    for (let i = 0; i < len; i++) data[i] *= 0.5 / (m || 1)
-  }
+  const data = sourceData(src, fs)
   const buf = ctx.createBuffer(1, data.length, fs)
   buf.copyToChannel(data as Float32Array<ArrayBuffer>, 0)
   cache.set(src, buf)
