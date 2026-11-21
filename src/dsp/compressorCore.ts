@@ -63,13 +63,16 @@ export class CompressorCore {
 
   /**
    * Process stereo-linked blocks in place. `channels` may hold 1 or 2 arrays.
+   * `key` replaces the detector input (external sidechain). `trace`, if given,
+   * receives the smoothed gain (dB, <= 0, before makeup) for every sample.
    */
-  process(channels: Float32Array[]) {
+  process(channels: Float32Array[], key?: Float32Array, trace?: Float32Array) {
     const n = channels[0]?.length ?? 0
     const makeup = fromDb(this.p.makeupDb)
     for (let i = 0; i < n; i++) {
       let peak = 0
-      for (const ch of channels) peak = Math.max(peak, Math.abs(ch[i]))
+      if (key) peak = Math.abs(key[i])
+      else for (const ch of channels) peak = Math.max(peak, Math.abs(ch[i]))
       const inDb = toDb(peak)
       const target = staticCurve(inDb, this.p) - inDb // <= 0
       // Smoothed branching detector: attack when reduction deepens.
@@ -77,6 +80,7 @@ export class CompressorCore {
       this.gainDb = a * this.gainDb + (1 - a) * target
       const g = fromDb(this.gainDb) * makeup
       for (const ch of channels) ch[i] *= g
+      if (trace) trace[i] = this.gainDb
       if (-this.gainDb > this.peakGr) this.peakGr = -this.gainDb
     }
   }
@@ -86,4 +90,39 @@ export class CompressorCore {
     this.peakGr = 0
     return gr
   }
+}
+
+export interface CompressorRender {
+  out: Float32Array
+  /** Smoothed gain per sample in dB (<= 0), before makeup. */
+  gainDb: Float32Array
+}
+
+/**
+ * Offline render of a looping mono buffer. The detector is first run over the end of
+ * the loop, so the start of the render is not an unrealistic "cold" attack.
+ */
+export function renderCompressor(
+  input: Float32Array,
+  sampleRate: number,
+  p: CompressorParams,
+  key?: Float32Array,
+): CompressorRender {
+  const c = new CompressorCore(sampleRate)
+  c.set(p)
+  const pre = Math.min(input.length, Math.round(sampleRate))
+  c.process([input.slice(input.length - pre)], key?.slice(key.length - pre))
+  const out = new Float32Array(input)
+  const gainDb = new Float32Array(input.length)
+  c.process([out], key, gainDb)
+  return { out, gainDb }
+}
+
+/**
+ * Steady-state output level (dB) of dry + compressed signal summed in parallel:
+ * dry·in + wet·compressed. With wet = 0 this is the identity line.
+ */
+export function parallelCurve(inDb: number, p: CompressorParams, dry: number, wet: number): number {
+  const comp = staticCurve(inDb, p) + p.makeupDb
+  return toDb(dry * fromDb(inDb) + wet * fromDb(comp))
 }
