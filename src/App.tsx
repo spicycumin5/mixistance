@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react'
 import { startSnapshotCollector } from './ai/snapshot'
 import { engine } from './audio/engine'
+import { labPlayer } from './audio/labPlayer'
+import { useLabNav } from './lab/nav'
 import { useStore } from './state/store'
 import { CoachPanel } from './ui/CoachPanel'
+import { LearnView } from './ui/learn/LearnView'
 import { LessonPanel } from './ui/LessonPanel'
 import { ChannelDetail } from './ui/mixer/ChannelDetail'
 import { ChannelStripView } from './ui/mixer/ChannelStripView'
@@ -11,7 +14,8 @@ import { SessionPanel } from './ui/SessionPanel'
 import { TrainView } from './ui/train/TrainView'
 import { Transport } from './ui/Transport'
 
-type View = 'mix' | 'train'
+type View = 'mix' | 'train' | 'learn'
+const VIEW_LABEL: Record<View, string> = { mix: 'Mix', learn: 'Learn', train: 'Ear Training' }
 type Side = 'lessons' | 'coach' | 'session'
 
 function Welcome() {
@@ -40,6 +44,19 @@ export default function App() {
   const [view, setView] = useState<View>('mix')
   const [side, setSide] = useState<Side>('lessons')
   const channels = useStore((s) => s.mix.channels)
+  const labRequest = useLabNav((s) => s.request)
+
+  const go = (v: View) => {
+    setView(v)
+    if (v !== 'mix' && engine.playing) engine.stop()
+    if (v !== 'learn') labPlayer.stop()
+  }
+
+  // Another component asked to open a lab (LearnView consumes the request on mount).
+  useEffect(() => {
+    if (labRequest && view !== 'learn') go('learn')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [labRequest])
 
   useEffect(() => {
     startSnapshotCollector()
@@ -62,18 +79,20 @@ export default function App() {
           <span className="hidden text-[11px] text-dim sm:inline">mixing practice studio</span>
         </div>
         <nav className="flex overflow-hidden rounded-md border border-line">
-          {(['mix', 'train'] as const).map((v) => (
+          {(['mix', 'learn', 'train'] as const).map((v) => (
             <button
               key={v}
-              onClick={() => { setView(v); if (v === 'train') engine.playing && engine.stop() }}
+              onClick={() => go(v)}
               className={`px-4 py-1.5 text-sm font-medium ${view === v ? 'bg-panel-3 text-ink' : 'bg-panel text-dim hover:text-ink'}`}
-            >{v === 'mix' ? 'Mix' : 'Ear Training'}</button>
+            >{VIEW_LABEL[v]}</button>
           ))}
         </nav>
         {view === 'mix' && channels.length > 0 && <div className="ml-auto"><Transport /></div>}
       </header>
 
-      {view === 'train' ? (
+      {view === 'learn' ? (
+        <LearnView />
+      ) : view === 'train' ? (
         <TrainView />
       ) : channels.length === 0 ? (
         <Welcome />

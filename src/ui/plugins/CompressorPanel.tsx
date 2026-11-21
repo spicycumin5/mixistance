@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { staticCurve, type CompressorParams } from '../../dsp/compressorCore'
+import { useLabNav } from '../../lab/nav'
 import { useRaf } from '../hooks'
 import { Knob } from '../components/Knob'
 
@@ -105,6 +106,11 @@ export function CompressorPanel({ params: p, onChange, readGr, readInput }: Prop
             {pr.name}
           </button>
         ))}
+        <button
+          className="ml-auto !px-2 !py-1 text-xs text-dim underline-offset-2 hover:text-amber hover:underline"
+          title="Open the Compressor lab with these settings and see what every knob does"
+          onClick={() => useLabNav.getState().open('compressor', { ...p, mix: 100 })}
+        >How does this work?</button>
       </div>
     </div>
   )

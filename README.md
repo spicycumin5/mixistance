@@ -28,6 +28,7 @@ The coach uses `claude-opus-5-5` by default. Set `MIXISTANCE_MODEL` to use anoth
 | **Level-matched A/B** | Loudness-matches each processor's output to its input, so you judge tone and dynamics instead of volume |
 | **Reference track** | Load a commercial track, trim its level to match yours, and flip between them |
 | **Lessons** | 7 guided lessons (balance, HPF, low-mid mud, harsh vocal, vocal comp, drum punch, depth). Each step checks your settings live |
+| **Learn** | 9 interactive labs (compressor, limiter, clipper/saturation, clip vs limit, gate/expander, multiband, sidechain, parallel processing, reverb). See the waveform before and after, gain-reduction traces, transfer curves, spectra and reverb impulse responses. Hover a knob to see what it does, and play Dry, Processed or Delta (only what changed). Each lab has a guided tour |
 | **Ear training** | Frequency ID (4 levels), EQ match, compression detection (on/off, attack, ratio), and level discrimination down to 0.5 dB. Progress is stored locally |
 | **AI coach** | Prioritised critique plus one-click "Try it" suggestions you can undo, and "why isn't this passing?" help inside lessons |
 | **Sessions** | Save and load settings in the browser, or export/import them as JSON |
@@ -43,6 +44,7 @@ npm run build   # type-check and production build
 
 - `src/dsp/`: pure DSP (compressor, loudness, biquad math) shared by AudioWorklets and tests
 - `src/audio/`: Web Audio graph (engine, channel strips, insert slots, FX, drill player, demo stems)
+- `src/lab/`: processor lab definitions (parameters, explanations, tours, offline renders)
 - `src/training/`: lesson definitions, drill logic, progress
 - `src/ui/`: React components
 - `server/`: Claude-backed coach API
